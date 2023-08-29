@@ -1,6 +1,6 @@
 use rayon::prelude::*;
 use tfhe::prelude::*;
-use std::time::{Duration, SystemTime};
+use std::time::{Instant};
 use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32};
 
 fn main() {
@@ -30,8 +30,8 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
-    let now = SystemTime::now();
-    println!("{}", now);
+    // 记录开始时间
+    let start_time = Instant::now();
     rayon::broadcast(|_| {
         set_server_key(server_keys.clone());
     });
@@ -42,12 +42,20 @@ fn main() {
         .map(|(x, y)| x * y)
         .collect::<Vec<_>>();
 
+        // 记录结束时间
+    let end_time = Instant::now();
+
+    // 计算时间间隔
+    let elapsed_time = end_time - start_time;
+
+    // 输出时间间隔
+    println!("代码运行时间：{:?}", elapsed_time)
+        
     for (i, result) in results.iter().enumerate() {
         let expected = clear_xs[i] * clear_ys[i];
         let decrypted: u32 = result.decrypt(&client_key);
 
         assert_eq!(decrypted, expected);
     }
-    let now2 = SystemTime::now();
-    println!("{}", now2);
+
 }
