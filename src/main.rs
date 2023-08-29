@@ -27,20 +27,11 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
-    // 记录开始时间
+    // start time
     let start_time = Instant::now();
     rayon::broadcast(|_| {
         set_server_key(server_keys.clone());
     });
-
-    
-        // 记录结束时间
-    let end_time0 = Instant::now();
-
-    // 计算时间间隔
-    let elapsed_time0 = end_time0 - start_time;
-    // 输出时间间隔
-    println!("代码运行时间0：{:?}", elapsed_time0);
 
     let results = xs
         .par_iter()
@@ -48,14 +39,9 @@ fn main() {
         .map(|(x, y)| x * y)
         .collect::<Vec<_>>();
 
-        // 记录结束时间
     let end_time = Instant::now();
-
-    // 计算时间间隔
     let elapsed_time = end_time - start_time;
-
-    // 输出时间间隔
-    println!("代码运行时间：{:?}", elapsed_time);
+    println!("time：{:?}", elapsed_time);
         
     for (i, result) in results.iter().enumerate() {
         let expected = clear_xs[i] * clear_ys[i];
