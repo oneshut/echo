@@ -33,6 +33,15 @@ fn main() {
         set_server_key(server_keys.clone());
     });
 
+    
+        // 记录结束时间
+    let end_time0 = Instant::now();
+
+    // 计算时间间隔
+    let elapsed_time0 = end_time0 - start_time;
+    // 输出时间间隔
+    println!("代码运行时间0：{:?}", elapsed_time0);
+
     let results = xs
         .par_iter()
         .zip(ys.par_iter())
