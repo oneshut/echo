@@ -9,8 +9,8 @@ fn main() {
 
     let (client_key, server_keys) = generate_keys(config);
 
-    let clear_xs = [4294967281u32, 64646];
-    let clear_ys = [99848u32, u32::MAX];
+    // let clear_xs = [4294967281u32, 64646];
+    // let clear_ys = [99848u32, u32::MAX];
 
     let xs = clear_xs
         .iter()
@@ -26,6 +26,8 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
+    let now = SystemTime::now();
+    println("{}", now);
     rayon::broadcast(|_| {
         set_server_key(server_keys.clone());
     });
@@ -42,4 +44,6 @@ fn main() {
 
         assert_eq!(decrypted, expected);
     }
+    let now2 = SystemTime::now();
+    println("{}", now2);
 }
