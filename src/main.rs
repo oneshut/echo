@@ -49,7 +49,7 @@ fn main() {
     let elapsed_time = end_time - start_time;
 
     // 输出时间间隔
-    println!("代码运行时间：{:?}", elapsed_time)
+    println!("代码运行时间：{:?}", elapsed_time);
         
     for (i, result) in results.iter().enumerate() {
         let expected = clear_xs[i] * clear_ys[i];
