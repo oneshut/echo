@@ -1,0 +1,20 @@
+[package]
+name = "httpecho"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+#actix-web = "4"
+#flate2 = "1.0.22"
+#base64 = "0.13.0"
+
+rayon = "1.5.1"
+tfhe = { version = "*", features = ["boolean", "shortint", "integer", "x86_64-unix"] }
+bincode = "1.3.3"
+
+[target.'cfg(target_arch = "x86_64")'.features]
+avx512f= ["target-feature=+avx512f"]
+avx512bw = ["target-feature=+avx512bw"]# Add othera9needed
+avx512vl = ["target-feature=+avx512vl"]
