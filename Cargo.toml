@@ -14,7 +14,7 @@ rayon = "1.5.1"
 tfhe = { version = "*", features = ["boolean", "shortint", "integer", "x86_64-unix"] }
 bincode = "1.3.3"
 
-[target.'cfg(target_arch = "x86_64")'.features]
-avx512f= ["target-feature=+avx512f"]
-avx512bw = ["target-feature=+avx512bw"]# Add othera9needed
-avx512vl = ["target-feature=+avx512vl"]
+# [target.'cfg(target_arch = "x86_64")'.features]
+# avx512f= ["target-feature=+avx512f"]
+# avx512bw = ["target-feature=+avx512bw"]# Add othera9needed
+# avx512vl = ["target-feature=+avx512vl"]
