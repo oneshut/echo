@@ -40,7 +40,7 @@ fn main() {
     //     .map(|(x, y)| x * y)
     //     .collect::<Vec<_>>();
 
-    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();;
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
     let (tx, rx) = channel();
     let count = xs.len();
     let mut results :Vec<FheUint16> = vec![];
@@ -56,7 +56,7 @@ fn main() {
     }
 
     for _ in 0..count {
-        let res = rx.recv()?;
+        let res = rx.recv().unwrap();
         results.push(res);
     }
 
