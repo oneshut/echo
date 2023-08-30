@@ -4,7 +4,7 @@ use std::time::{Instant};
 use std::sync::mpsc::{channel, RecvError};
 use rayon::ThreadPool;
 // use threadpool::ThreadPool;
-use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32};
+use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint16};
 
 fn main() {
     let config = ConfigBuilder::all_disabled()
@@ -19,14 +19,14 @@ fn main() {
     let xs = clear_xs
         .iter()
         .copied()
-        .map(|value| FheUint32::try_encrypt(value, &client_key))
+        .map(|value| FheUint16::try_encrypt(value as u16, &client_key))
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
     let ys = clear_ys
         .iter()
         .copied()
-        .map(|value| FheUint32::try_encrypt(value, &client_key))
+        .map(|value| FheUint16::try_encrypt(value as u16, &client_key))
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
@@ -44,7 +44,7 @@ fn main() {
     // let pool = rayon::ThreadPoolBuilder::new().num_threads(32).build().unwrap();
     // let (tx, rx) = channel();
     // let count = xs.len();
-    // let mut results :Vec<FheUint32> = vec![];
+    // let mut results :Vec<FheUint16> = vec![];
     // for i in 0..count {
     //     let tx = tx.clone();
     //     let a = xs[i].clone();
@@ -64,7 +64,7 @@ fn main() {
 
     // set_server_key(server_keys.clone());
     // let start_time = Instant::now();
-    // let mut results :Vec<FheUint32> = vec![];
+    // let mut results :Vec<FheUint16> = vec![];
     // for i in 0..xs.len() {
     //     results.push(xs[i].clone() * ys[i.clone()].clone() );
     // }
@@ -76,7 +76,7 @@ fn main() {
         
     for (i, result) in results.iter().enumerate() {
         let expected = clear_xs[i] * clear_ys[i];
-        let decrypted: u32 = result.decrypt(&client_key);
+        let decrypted: u16 = result.decrypt(&client_key);
 
         assert_eq!(decrypted, expected);
     }
