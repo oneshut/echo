@@ -30,10 +30,10 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
+    let start_time = Instant::now();
     rayon::broadcast(|_| {
         set_server_key(server_keys.clone());
     });
-    let start_time = Instant::now();
     let results = xs
         .par_iter()
         .zip(ys.par_iter())
