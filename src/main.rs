@@ -27,15 +27,23 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
-    rayon::broadcast(|_| {
-        set_server_key(server_keys.clone());
-    });
+    // rayon::broadcast(|_| {
+    //     set_server_key(server_keys.clone());
+    // });
+    // let start_time = Instant::now();
+    // let results = xs
+    //     .par_iter()
+    //     .zip(ys.par_iter())
+    //     .map(|(x, y)| x * y)
+    //     .collect::<Vec<_>>();
+    set_server_key(server_keys.clone());
+
     let start_time = Instant::now();
-    let results = xs
-        .par_iter()
-        .zip(ys.par_iter())
-        .map(|(x, y)| x * y)
-        .collect::<Vec<_>>();
+    let mut results :Vec<FheUint16> = vec![];
+    for i in 0..xs.len() {
+        results.push(xs[i].clone() * ys[i.clone()].clone() );
+    }
+
 
     let end_time = Instant::now();
     let elapsed_time = end_time - start_time;
