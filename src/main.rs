@@ -49,8 +49,9 @@ fn main() {
         let tx = tx.clone();
         let a = xs[i].clone();
         let b = ys[i].clone();
+        let s = server_keys.clone();
         pool.install(move || {
-            set_server_key(server_keys.clone());
+            set_server_key(s);
             let res = a * b;
             tx.send(res).expect("Could not send data!");
         });
