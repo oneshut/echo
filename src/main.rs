@@ -41,7 +41,7 @@ fn main() {
     //     .collect::<Vec<_>>();
 
     let start_time = Instant::now();
-    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(16).build().unwrap();
     let (tx, rx) = channel();
     let count = xs.len();
     let mut results :Vec<FheUint16> = vec![];
