@@ -30,37 +30,37 @@ fn main() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
-    // rayon::broadcast(|_| {
-    //     set_server_key(server_keys.clone());
-    // });
-    // let start_time = Instant::now();
-    // let results = xs
-    //     .par_iter()
-    //     .zip(ys.par_iter())
-    //     .map(|(x, y)| x * y)
-    //     .collect::<Vec<_>>();
-
+    rayon::broadcast(|_| {
+        set_server_key(server_keys.clone());
+    });
     let start_time = Instant::now();
-    let pool = rayon::ThreadPoolBuilder::new().num_threads(32).build().unwrap();
-    let (tx, rx) = channel();
-    let count = xs.len();
-    let mut results :Vec<FheUint16> = vec![];
-    for i in 0..count {
-        let tx = tx.clone();
-        let a = xs[i].clone();
-        let b = ys[i].clone();
-        let s = server_keys.clone();
-        pool.install(move || {
-            set_server_key(s);
-            let res = a * b;
-            tx.send(res).expect("Could not send data!");
-        });
-    }
+    let results = xs
+        .par_iter()
+        .zip(ys.par_iter())
+        .map(|(x, y)| x * y)
+        .collect::<Vec<_>>();
 
-    for _ in 0..count {
-        let res = rx.recv().unwrap();
-        results.push(res);
-    }
+    // let start_time = Instant::now();
+    // let pool = rayon::ThreadPoolBuilder::new().num_threads(32).build().unwrap();
+    // let (tx, rx) = channel();
+    // let count = xs.len();
+    // let mut results :Vec<FheUint16> = vec![];
+    // for i in 0..count {
+    //     let tx = tx.clone();
+    //     let a = xs[i].clone();
+    //     let b = ys[i].clone();
+    //     let s = server_keys.clone();
+    //     pool.install(move || {
+    //         set_server_key(s);
+    //         let res = a * b;
+    //         tx.send(res).expect("Could not send data!");
+    //     });
+    // }
+
+    // for _ in 0..count {
+    //     let res = rx.recv().unwrap();
+    //     results.push(res);
+    // }
 
     // set_server_key(server_keys.clone());
     // let start_time = Instant::now();
