@@ -40,6 +40,7 @@ fn main() {
     //     .map(|(x, y)| x * y)
     //     .collect::<Vec<_>>();
 
+    let start_time = Instant::now();
     let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
     let (tx, rx) = channel();
     let count = xs.len();
