@@ -1,6 +1,9 @@
 use rayon::prelude::*;
 use tfhe::prelude::*;
 use std::time::{Instant};
+use std::sync::mpsc::{channel, RecvError};
+use rayon::ThreadPool;
+// use threadpool::ThreadPool;
 use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint16};
 
 fn main() {
@@ -36,13 +39,33 @@ fn main() {
     //     .zip(ys.par_iter())
     //     .map(|(x, y)| x * y)
     //     .collect::<Vec<_>>();
-    set_server_key(server_keys.clone());
 
-    let start_time = Instant::now();
+    let pool = rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();;
+    let (tx, rx) = channel();
+    let count = xs.len();
     let mut results :Vec<FheUint16> = vec![];
-    for i in 0..xs.len() {
-        results.push(xs[i].clone() * ys[i.clone()].clone() );
+    for i in 0..count {
+        let tx = tx.clone();
+        let a = xs[i].clone();
+        let b = ys[i].clone();
+        pool.install(move || {
+            set_server_key(server_keys.clone());
+            let res = a * b;
+            tx.send(res).expect("Could not send data!");
+        });
     }
+
+    for _ in 0..count {
+        let res = rx.recv()?;
+        results.push(res);
+    }
+
+    // set_server_key(server_keys.clone());
+    // let start_time = Instant::now();
+    // let mut results :Vec<FheUint16> = vec![];
+    // for i in 0..xs.len() {
+    //     results.push(xs[i].clone() * ys[i.clone()].clone() );
+    // }
 
 
     let end_time = Instant::now();
