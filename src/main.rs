@@ -4,7 +4,7 @@ use std::time::{Instant};
 use std::sync::mpsc::{channel, RecvError};
 use rayon::ThreadPool;
 // use threadpool::ThreadPool;
-use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint16};
+use tfhe::{generate_keys, set_server_key, ConfigBuilder, FheUint32};
 
 fn main() {
     let config = ConfigBuilder::all_disabled()
@@ -13,38 +13,38 @@ fn main() {
 
     let (client_key, server_keys) = generate_keys(config);
 
-    let clear_xs = [1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16];
-    let clear_ys = [6u16,5u16,4u16,3u16,2u16,1u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16,1u16,2u16,3u16,4u16,5u16,6u16];
+    let clear_xs = [1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32];
+    let clear_ys = [6u32,5u32,4u32,3u32,2u32,1u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32,1u32,2u32,3u32,4u32,5u32,6u32];
     
     let xs = clear_xs
         .iter()
         .copied()
-        .map(|value| FheUint16::try_encrypt(value, &client_key))
+        .map(|value| FheUint32::try_encrypt(value, &client_key))
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
     let ys = clear_ys
         .iter()
         .copied()
-        .map(|value| FheUint16::try_encrypt(value, &client_key))
+        .map(|value| FheUint32::try_encrypt(value, &client_key))
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
 
     let start_time = Instant::now();
-    // rayon::broadcast(|_| {
-    //     set_server_key(server_keys.clone());
-    // });
-    // let results = xs
-    //     .par_iter()
-    //     .zip(ys.par_iter())
-    //     .map(|(x, y)| x * y)
-    //     .collect::<Vec<_>>();
+    rayon::broadcast(|_| {
+        set_server_key(server_keys.clone());
+    });
+    let results = xs
+        .par_iter()
+        .zip(ys.par_iter())
+        .map(|(x, y)| x * y)
+        .collect::<Vec<_>>();
 
     // let start_time = Instant::now();
     // let pool = rayon::ThreadPoolBuilder::new().num_threads(32).build().unwrap();
     // let (tx, rx) = channel();
     // let count = xs.len();
-    // let mut results :Vec<FheUint16> = vec![];
+    // let mut results :Vec<FheUint32> = vec![];
     // for i in 0..count {
     //     let tx = tx.clone();
     //     let a = xs[i].clone();
@@ -62,12 +62,12 @@ fn main() {
     //     results.push(res);
     // }
 
-    set_server_key(server_keys.clone());
-    let start_time = Instant::now();
-    let mut results :Vec<FheUint16> = vec![];
-    for i in 0..xs.len() {
-        results.push(xs[i].clone() * ys[i.clone()].clone() );
-    }
+    // set_server_key(server_keys.clone());
+    // let start_time = Instant::now();
+    // let mut results :Vec<FheUint32> = vec![];
+    // for i in 0..xs.len() {
+    //     results.push(xs[i].clone() * ys[i.clone()].clone() );
+    // }
 
 
     let end_time = Instant::now();
@@ -76,7 +76,7 @@ fn main() {
         
     for (i, result) in results.iter().enumerate() {
         let expected = clear_xs[i] * clear_ys[i];
-        let decrypted: u16 = result.decrypt(&client_key);
+        let decrypted: u32 = result.decrypt(&client_key);
 
         assert_eq!(decrypted, expected);
     }
